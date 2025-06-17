@@ -1,0 +1,106 @@
+**📄 COMMON PROJECT BRIEF: "Tick'Help" - Ticket Management Application**
+
+---
+
+### 🔍 LEARNING CONTEXT
+
+This project is part of the **DEVE427 - Application Development & Maintenance Support** module of the **Digital Foundation 2A - Development & Cybersecurity** program. You will design, develop, maintain, and document a web application in a realistic project management context.
+
+---
+
+### 🌍 GENERAL OBJECTIVE
+
+Develop from scratch a **ticket management** application (bugs, requests, tasks), called "Tick'Help," while adhering to best practices for **design, coding, testing, and maintenance support**. The application must be scalable, tested, equipped with tools, and subject to a simulated maintenance phase.
+
+---
+
+### 🔹 MINIMUM EXPECTED FEATURES (MVP)
+
+1. **User authentication** (email + password)
+2. **Ticket dashboard**: filterable and sortable list
+3. **CRUD tickets**: create, read, modify, delete
+4. **Ticket assignment** to a user
+5. **Ticket statuses**: to do / in progress / resolved
+6. **Search & sort** (priority, status, date, etc.)
+7. **Change history**
+
+---
+
+### 🧑‍💻 REQUIRED TECHNICAL STACK
+
+- **Frontend**: React.js (Vite or CRA)
+- **Backend**: Node.js + Express.js
+- **Database**: SQL (ideally PostgreSQL)
+- **Tests**: Jest (backend) React Testing Library (frontend)
+- CI/CD: GitHub Actions
+- Deployment: Render, Railway, or Netlify
+- Tools:
+
+- Notion for issue and scheduling management
+- Git + GitFlow
+- ESLint for static code analysis
+
+---
+
+### 📆 STEP-BY-STEP PROCESS
+
+#### 1. Phase 1 - Project Initialization (Sprint 0)
+
+- Team Formation (4-5 students)
+- Review the brief, install the tools
+- Define the initial backlog (MVP)
+- Task Planning in Notion
+
+#### 2. Phase 2 - Development (Sprints 1 and 2)
+
+- Implement MVP Features
+- Set up GitFlow + CI/CD
+- Unit Testing (Backend and Frontend)
+- Integration of ESLint
+
+#### 3. **Phase 3 - Delivery and Maintenance (Sprint 3)**
+
+- Delivery of V1
+- TMA simulation: your trainer will find/inject bugs and development requests
+- You will be required to analyze, correct, test, and document your interventions (project owner report)
+
+---
+
+### 📚 EXPECTED DELIVERABLES
+
+- Documented source code (GitHub)
+- Structured and active Notion board
+- TMA intervention report (template provided)
+- ESLint configuration file and analysis results
+- Test coverage report
+- Link to the deployed application
+
+---
+
+### 🌟 SUCCESS CRITERIA
+
+- Adherence to best practices (code, tests, CI/CD)
+- Good task management and collaboration via Notion
+- Quality of communication (project owner report, documentation)
+- Ability to correct, test, and document (TMA) simulated)
+- Code maintainability and clarity
+
+---
+
+### ✅ EVALUATION
+
+- Continuous assessment (interim deliverables, tickets, code)
+- MSPR TPRE300: project presentation, TMA report, defense
+
+---
+
+### 🚀 TIPS
+
+- Work **in agile mode** with regular stand-ups
+- Commit often with clear messages
+- Prioritize **quality and traceability** over quantity
+- Consider **testing and documentation** during each sprint
+
+---
+
+🎓 Good luck to everyone! You will have an experience close to that of a real project team in a company.
