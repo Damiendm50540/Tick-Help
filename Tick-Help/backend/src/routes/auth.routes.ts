@@ -13,4 +13,7 @@ router.post('/login', authController.login);
 // GET /api/auth/profile - Get user profile (protected route)
 router.get('/profile', authenticate, authController.getProfile);
 
+// GET /api/auth/users - Get all users (protected route)
+router.get('/users', authenticate, authController.getAllUsers);
+
 export default router;
