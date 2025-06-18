@@ -37,65 +37,62 @@ const Navbar: React.FC = () => {
     : '';
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component={Link} to="/tickets" sx={{ flexGrow: 1, textDecoration: 'none', color: 'inherit' }}>
-            Tick'Help
-          </Typography>
-          {currentUser ? (
-            <div>
-              <IconButton
-                size="large"
-                aria-label="compte de l'utilisateur connecté"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <Avatar sx={{ width: 32, height: 32, bgcolor: 'secondary.main' }}>
-                  {userInitials}
-                </Avatar>
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={() => { handleClose(); navigate('/profile'); }}>
-                  Mon Profil
+    <AppBar position="fixed" elevation={3} sx={{ background: 'linear-gradient(90deg, #4f8cff 0%, #6f6fff 100%)', boxShadow: 3 }}>
+      <Toolbar sx={{ maxWidth: 1200, width: '100%', mx: 'auto', minHeight: 64 }}>
+        <Typography
+          variant="h5"
+          component={Link}
+          to="/tickets"
+          sx={{ flexGrow: 1, textDecoration: 'none', color: 'white', fontWeight: 700, letterSpacing: 1 }}
+        >
+          Tick'Help
+        </Typography>
+        {currentUser ? (
+          <div>
+            <IconButton
+              size="large"
+              aria-label="compte de l'utilisateur connecté"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              sx={{ p: 0 }}
+            >
+              <Avatar sx={{ width: 36, height: 36, bgcolor: '#fff', color: '#4f8cff', fontWeight: 700, border: '2px solid #4f8cff' }}>
+                {userInitials}
+              </Avatar>
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              keepMounted
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={() => { handleClose(); navigate('/profile'); }}>
+                Mon Profil
+              </MenuItem>
+              {currentUser.role === 'admin' && (
+                <MenuItem onClick={() => { handleClose(); navigate('/admin'); }}>
+                  Administration
                 </MenuItem>
-                {currentUser.role === 'admin' && (
-                  <MenuItem onClick={() => { handleClose(); navigate('/admin'); }}>
-                    Administration
-                  </MenuItem>
-                )}
-                <MenuItem onClick={handleLogout}>Se déconnecter</MenuItem>
-              </Menu>
-            </div>
-          ) : (
-            <div>
-              <Button color="inherit" component={Link} to="/">
-                Connexion
-              </Button>
-              <Button color="inherit" component={Link} to="/register">
-                Inscription
-              </Button>
-            </div>
-          )}
-        </Toolbar>
-      </AppBar>
-    </Box>
+              )}
+              <MenuItem onClick={handleLogout}>Se déconnecter</MenuItem>
+            </Menu>
+          </div>
+        ) : (
+          <div>
+            <Button color="inherit" component={Link} to="/" sx={{ color: 'white', fontWeight: 500 }}>
+              Connexion
+            </Button>
+            <Button color="inherit" component={Link} to="/register" sx={{ color: 'white', fontWeight: 500 }}>
+              Inscription
+            </Button>
+          </div>
+        )}
+      </Toolbar>
+    </AppBar>
   );
 };
 

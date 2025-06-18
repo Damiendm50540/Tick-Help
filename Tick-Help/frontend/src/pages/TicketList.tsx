@@ -207,198 +207,202 @@ const TicketList: React.FC = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-        <Typography variant="h4" component="h1">
-          Tickets
-        </Typography>
-        <Box>
-          <Button
-            startIcon={<FilterListIcon />}
-            onClick={() => setOpenFilters(true)}
-            sx={{ mr: 1 }}
+    <Box sx={{ bgcolor: 'transparent', minHeight: '100vh', pt: 10, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Container maxWidth="xl" sx={{ flex: 1, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
+        <Box sx={{ width: '100%', maxWidth: 1400, mx: 'auto', p: { xs: 1, md: 3 } }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+            <Typography variant="h4" component="h1">
+              Tickets
+            </Typography>
+            <Box>
+              <Button
+                startIcon={<FilterListIcon />}
+                onClick={() => setOpenFilters(true)}
+                sx={{ mr: 1 }}
+              >
+                Filtres
+              </Button>
+            </Box>
+          </Box>
+
+          {error && (
+            <Box sx={{ mb: 2 }}>
+              <Typography color="error">{error}</Typography>
+            </Box>
+          )}
+
+          {/* Affichage Kanban par statut */}
+          <Box sx={{ display: 'flex', gap: 2, mb: 4, overflowX: 'auto' }}>
+            {[
+              { key: 'todo', label: 'À faire' },
+              { key: 'in_progress', label: 'En cours' },
+              { key: 'resolved', label: 'Résolu' },
+            ].map((col) => (
+              <Paper key={col.key} sx={{ minWidth: 320, flex: 1, p: 2, bgcolor: '#f7f7f7' }}>
+                <Typography variant="h6" sx={{ mb: 2, textAlign: 'center' }}>{col.label}</Typography>
+                {groupedTickets[col.key as keyof typeof groupedTickets].length === 0 ? (
+                  <Typography variant="body2" color="text.secondary" align="center">
+                    Aucun ticket
+                  </Typography>
+                ) : (
+                  groupedTickets[col.key as keyof typeof groupedTickets].map((ticket) => (
+                    <Box key={ticket.id} sx={{ mb: 2 }}>
+                      <TicketCard ticket={ticket} />
+                    </Box>
+                  ))
+                )}
+              </Paper>
+            ))}
+          </Box>
+
+          {/* FAB pour ajouter un nouveau ticket */}
+          <Fab
+            color="primary"
+            aria-label="add"
+            sx={{ position: 'fixed', bottom: 16, right: 16 }}
+            onClick={() => setOpenNewTicket(true)}
           >
-            Filtres
-          </Button>
+            <AddIcon />
+          </Fab>
+
+          {/* Modal pour les filtres */}
+          <Dialog open={openFilters} onClose={() => setOpenFilters(false)} fullWidth maxWidth="sm">
+            <DialogTitle>Filtrer les tickets</DialogTitle>
+            <DialogContent>
+              <Box sx={{ pt: 1 }}>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Rechercher"
+                  name="search"
+                  value={filters.search}
+                  onChange={handleFilterChange}
+                />
+                
+                <FormControl fullWidth margin="normal">
+                  <InputLabel>Statut</InputLabel>
+                  <Select
+                    name="status"
+                    value={filters.status}
+                    label="Statut"
+                    onChange={handleFilterChange}
+                  >
+                    <MenuItem value="">Tous</MenuItem>
+                    <MenuItem value="todo">À faire</MenuItem>
+                    <MenuItem value="in_progress">En cours</MenuItem>
+                    <MenuItem value="resolved">Résolu</MenuItem>
+                  </Select>
+                </FormControl>
+                
+                <FormControl fullWidth margin="normal">
+                  <InputLabel>Priorité</InputLabel>
+                  <Select
+                    name="priority"
+                    value={filters.priority}
+                    label="Priorité"
+                    onChange={handleFilterChange}
+                  >
+                    <MenuItem value="">Toutes</MenuItem>
+                    <MenuItem value="low">Faible</MenuItem>
+                    <MenuItem value="medium">Moyenne</MenuItem>
+                    <MenuItem value="high">Élevée</MenuItem>
+                    <MenuItem value="critical">Critique</MenuItem>
+                  </Select>
+                </FormControl>
+                
+                <FormControl fullWidth margin="normal">
+                  <InputLabel>Assigné à</InputLabel>
+                  <Select
+                    name="assigneeId"
+                    value={filters.assigneeId}
+                    label="Assigné à"
+                    onChange={handleFilterChange}
+                  >
+                    <MenuItem value="">Tous</MenuItem>
+                    <MenuItem value="null">Non assigné</MenuItem>
+                    {users.map((user) => (
+                      <MenuItem key={user.id} value={user.id}>
+                        {user.firstName} {user.lastName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={resetFilters}>Réinitialiser</Button>
+              <Button onClick={() => setOpenFilters(false)}>Fermer</Button>
+            </DialogActions>
+          </Dialog>
+
+          {/* Modal pour nouveau ticket */}
+          <Dialog open={openNewTicket} onClose={() => setOpenNewTicket(false)} fullWidth maxWidth="sm">
+            <DialogTitle>Créer un nouveau ticket</DialogTitle>
+            <DialogContent>
+              <Box sx={{ pt: 1 }}>
+                <TextField
+                  fullWidth
+                  required
+                  margin="normal"
+                  label="Titre"
+                  name="title"
+                  value={newTicket.title}
+                  onChange={handleNewTicketChange}
+                />
+                
+                <TextField
+                  fullWidth
+                  required
+                  margin="normal"
+                  label="Description"
+                  name="description"
+                  multiline
+                  rows={4}
+                  value={newTicket.description}
+                  onChange={handleNewTicketChange}
+                />
+                
+                <FormControl fullWidth margin="normal">
+                  <InputLabel>Priorité</InputLabel>
+                  <Select
+                    name="priority"
+                    value={newTicket.priority}
+                    label="Priorité"
+                    onChange={handleNewTicketChange}
+                  >
+                    <MenuItem value="low">Faible</MenuItem>
+                    <MenuItem value="medium">Moyenne</MenuItem>
+                    <MenuItem value="high">Élevée</MenuItem>
+                    <MenuItem value="critical">Critique</MenuItem>
+                  </Select>
+                </FormControl>
+                
+                <FormControl fullWidth margin="normal">
+                  <InputLabel>Assigné à (optionnel)</InputLabel>
+                  <Select
+                    name="assigneeId"
+                    value={newTicket.assigneeId}
+                    label="Assigné à (optionnel)"
+                    onChange={handleNewTicketChange}
+                  >
+                    <MenuItem value="">Non assigné</MenuItem>
+                    {users.map((user) => (
+                      <MenuItem key={user.id} value={user.id}>
+                        {user.firstName} {user.lastName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setOpenNewTicket(false)}>Annuler</Button>
+              <Button onClick={handleSubmitNewTicket} variant="contained">Créer</Button>
+            </DialogActions>
+          </Dialog>
         </Box>
-      </Box>
-
-      {error && (
-        <Box sx={{ mb: 2 }}>
-          <Typography color="error">{error}</Typography>
-        </Box>
-      )}
-
-      {/* Affichage Kanban par statut */}
-      <Box sx={{ display: 'flex', gap: 2, mb: 4, overflowX: 'auto' }}>
-        {[
-          { key: 'todo', label: 'À faire' },
-          { key: 'in_progress', label: 'En cours' },
-          { key: 'resolved', label: 'Résolu' },
-        ].map((col) => (
-          <Paper key={col.key} sx={{ minWidth: 320, flex: 1, p: 2, bgcolor: '#f7f7f7' }}>
-            <Typography variant="h6" sx={{ mb: 2, textAlign: 'center' }}>{col.label}</Typography>
-            {groupedTickets[col.key as keyof typeof groupedTickets].length === 0 ? (
-              <Typography variant="body2" color="text.secondary" align="center">
-                Aucun ticket
-              </Typography>
-            ) : (
-              groupedTickets[col.key as keyof typeof groupedTickets].map((ticket) => (
-                <Box key={ticket.id} sx={{ mb: 2 }}>
-                  <TicketCard ticket={ticket} />
-                </Box>
-              ))
-            )}
-          </Paper>
-        ))}
-      </Box>
-
-      {/* FAB pour ajouter un nouveau ticket */}
-      <Fab
-        color="primary"
-        aria-label="add"
-        sx={{ position: 'fixed', bottom: 16, right: 16 }}
-        onClick={() => setOpenNewTicket(true)}
-      >
-        <AddIcon />
-      </Fab>
-
-      {/* Modal pour les filtres */}
-      <Dialog open={openFilters} onClose={() => setOpenFilters(false)} fullWidth maxWidth="sm">
-        <DialogTitle>Filtrer les tickets</DialogTitle>
-        <DialogContent>
-          <Box sx={{ pt: 1 }}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Rechercher"
-              name="search"
-              value={filters.search}
-              onChange={handleFilterChange}
-            />
-            
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Statut</InputLabel>
-              <Select
-                name="status"
-                value={filters.status}
-                label="Statut"
-                onChange={handleFilterChange}
-              >
-                <MenuItem value="">Tous</MenuItem>
-                <MenuItem value="todo">À faire</MenuItem>
-                <MenuItem value="in_progress">En cours</MenuItem>
-                <MenuItem value="resolved">Résolu</MenuItem>
-              </Select>
-            </FormControl>
-            
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Priorité</InputLabel>
-              <Select
-                name="priority"
-                value={filters.priority}
-                label="Priorité"
-                onChange={handleFilterChange}
-              >
-                <MenuItem value="">Toutes</MenuItem>
-                <MenuItem value="low">Faible</MenuItem>
-                <MenuItem value="medium">Moyenne</MenuItem>
-                <MenuItem value="high">Élevée</MenuItem>
-                <MenuItem value="critical">Critique</MenuItem>
-              </Select>
-            </FormControl>
-            
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Assigné à</InputLabel>
-              <Select
-                name="assigneeId"
-                value={filters.assigneeId}
-                label="Assigné à"
-                onChange={handleFilterChange}
-              >
-                <MenuItem value="">Tous</MenuItem>
-                <MenuItem value="null">Non assigné</MenuItem>
-                {users.map((user) => (
-                  <MenuItem key={user.id} value={user.id}>
-                    {user.firstName} {user.lastName}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={resetFilters}>Réinitialiser</Button>
-          <Button onClick={() => setOpenFilters(false)}>Fermer</Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Modal pour nouveau ticket */}
-      <Dialog open={openNewTicket} onClose={() => setOpenNewTicket(false)} fullWidth maxWidth="sm">
-        <DialogTitle>Créer un nouveau ticket</DialogTitle>
-        <DialogContent>
-          <Box sx={{ pt: 1 }}>
-            <TextField
-              fullWidth
-              required
-              margin="normal"
-              label="Titre"
-              name="title"
-              value={newTicket.title}
-              onChange={handleNewTicketChange}
-            />
-            
-            <TextField
-              fullWidth
-              required
-              margin="normal"
-              label="Description"
-              name="description"
-              multiline
-              rows={4}
-              value={newTicket.description}
-              onChange={handleNewTicketChange}
-            />
-            
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Priorité</InputLabel>
-              <Select
-                name="priority"
-                value={newTicket.priority}
-                label="Priorité"
-                onChange={handleNewTicketChange}
-              >
-                <MenuItem value="low">Faible</MenuItem>
-                <MenuItem value="medium">Moyenne</MenuItem>
-                <MenuItem value="high">Élevée</MenuItem>
-                <MenuItem value="critical">Critique</MenuItem>
-              </Select>
-            </FormControl>
-            
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Assigné à (optionnel)</InputLabel>
-              <Select
-                name="assigneeId"
-                value={newTicket.assigneeId}
-                label="Assigné à (optionnel)"
-                onChange={handleNewTicketChange}
-              >
-                <MenuItem value="">Non assigné</MenuItem>
-                {users.map((user) => (
-                  <MenuItem key={user.id} value={user.id}>
-                    {user.firstName} {user.lastName}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenNewTicket(false)}>Annuler</Button>
-          <Button onClick={handleSubmitNewTicket} variant="contained">Créer</Button>
-        </DialogActions>
-      </Dialog>
-    </Container>
+      </Container>
+    </Box>
   );
 };
 
