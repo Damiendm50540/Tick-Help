@@ -22,7 +22,7 @@ interface TicketAttributes {
   status: TicketStatus;
   priority: TicketPriority;
   assigneeId: string | null;
-  createdById: string;
+  createdById: string | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -36,7 +36,7 @@ class Ticket extends Model<TicketAttributes, TicketCreationAttributes> implement
   public status!: TicketStatus;
   public priority!: TicketPriority;
   public assigneeId!: string | null;
-  public createdById!: string;
+  public createdById!: string | null;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -77,7 +77,7 @@ Ticket.init(
     },
     createdById: {
       type: DataTypes.CHAR(36),
-      allowNull: false,
+      allowNull: true,
       references: {
         model: User,
         key: 'id',
