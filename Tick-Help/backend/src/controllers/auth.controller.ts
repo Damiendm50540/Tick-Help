@@ -122,3 +122,17 @@ export const getProfile = async (req: Request, res: Response): Promise<void> => 
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Récupérer tous les utilisateurs sans inclure le mot de passe
+    const users = await User.findAll({
+      attributes: { exclude: ['password'] }
+    });
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error('Get all users error:', error);
+    res.status(500).json({ message: 'Server error while fetching users' });
+  }
+};
