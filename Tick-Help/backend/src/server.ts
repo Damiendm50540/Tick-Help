@@ -7,6 +7,7 @@ import cors from 'cors';
 import { sequelize } from './config/database';
 import authRoutes from './routes/auth.routes';
 import ticketRoutes from './routes/ticket.routes';
+import userRoutes from './routes/user.routes';
 
 // Importer les modèles pour s'assurer qu'ils sont chargés avant la synchronisation
 import './models/user.model';
@@ -28,6 +29,7 @@ app.get('/', (req, res) => {
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/tickets', ticketRoutes);
+app.use('/api/user', userRoutes);
 
 // Start server
 const startServer = async () => {
