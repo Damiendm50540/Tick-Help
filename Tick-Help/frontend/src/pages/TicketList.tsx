@@ -187,6 +187,17 @@ const TicketList: React.FC = () => {
     }
   };
 
+  // Fonction utilitaire pour grouper les tickets par statut
+  const groupTicketsByStatus = (tickets: Ticket[]) => {
+    return {
+      todo: tickets.filter(t => t.status === 'todo'),
+      in_progress: tickets.filter(t => t.status === 'in_progress'),
+      resolved: tickets.filter(t => t.status === 'resolved'),
+    };
+  };
+
+  const groupedTickets = groupTicketsByStatus(filteredTickets);
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
@@ -218,22 +229,29 @@ const TicketList: React.FC = () => {
         </Box>
       )}
 
-      {filteredTickets.length === 0 && !loading ? (
-        <Paper sx={{ p: 3, textAlign: 'center' }}>
-          <Typography variant="h6">Aucun ticket trouvé</Typography>
-          <Typography variant="body2" color="text.secondary">
-            Créez un nouveau ticket ou modifiez vos filtres
-          </Typography>
-        </Paper>
-      ) : (
-        <Grid container spacing={2}>
-          {filteredTickets.map((ticket) => (
-            <Grid item xs={12} key={ticket.id}>
-              <TicketCard ticket={ticket} />
-            </Grid>
-          ))}
-        </Grid>
-      )}
+      {/* Affichage Kanban par statut */}
+      <Box sx={{ display: 'flex', gap: 2, mb: 4, overflowX: 'auto' }}>
+        {[
+          { key: 'todo', label: 'À faire' },
+          { key: 'in_progress', label: 'En cours' },
+          { key: 'resolved', label: 'Résolu' },
+        ].map((col) => (
+          <Paper key={col.key} sx={{ minWidth: 320, flex: 1, p: 2, bgcolor: '#f7f7f7' }}>
+            <Typography variant="h6" sx={{ mb: 2, textAlign: 'center' }}>{col.label}</Typography>
+            {groupedTickets[col.key as keyof typeof groupedTickets].length === 0 ? (
+              <Typography variant="body2" color="text.secondary" align="center">
+                Aucun ticket
+              </Typography>
+            ) : (
+              groupedTickets[col.key as keyof typeof groupedTickets].map((ticket) => (
+                <Box key={ticket.id} sx={{ mb: 2 }}>
+                  <TicketCard ticket={ticket} />
+                </Box>
+              ))
+            )}
+          </Paper>
+        ))}
+      </Box>
 
       {/* FAB pour ajouter un nouveau ticket */}
       <Fab
