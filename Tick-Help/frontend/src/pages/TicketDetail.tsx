@@ -10,7 +10,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Grid,
   Paper,
   Chip,
   Divider,
@@ -30,6 +29,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ticketService, userService } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import Grid from '@mui/material/Grid';
 
 interface User {
   id: string;
@@ -87,6 +87,7 @@ const TicketDetail: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [editForm, setEditForm] = useState({
     title: '',
     description: '',
@@ -135,11 +136,11 @@ const TicketDetail: React.FC = () => {
     fetchData();
   }, [id]);
 
-  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+  const handleEditChange = (e: any) => {
     const { name, value } = e.target;
-    setEditForm(prev => ({
+    setEditForm((prev) => ({
       ...prev,
-      [name as string]: value,
+      [name]: value,
     }));
   };
 
@@ -171,16 +172,18 @@ const TicketDetail: React.FC = () => {
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (e?: React.MouseEvent<HTMLButtonElement>) => {
+    if (e) e.preventDefault();
+    if (!id) return;
+    setDeleting(true);
+    setError(null);
     try {
-      setError(null);
-      if (!id) return;
-      
       await ticketService.deleteTicket(id);
+      setDeleting(false);
       navigate('/tickets');
-    } catch (err) {
-      console.error("Erreur lors de la suppression du ticket:", err);
-      setError("Impossible de supprimer le ticket. Veuillez réessayer.");
+    } catch (err: any) {
+      setDeleting(false);
+      setError('Erreur lors de la suppression du ticket. Veuillez réessayer.');
     }
   };
 
@@ -529,9 +532,9 @@ const TicketDetail: React.FC = () => {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDelete(false)}>Annuler</Button>
-          <Button onClick={handleDelete} color="error" variant="contained">
-            Supprimer
+          <Button onClick={() => setOpenDelete(false)} disabled={deleting}>Annuler</Button>
+          <Button onClick={handleDelete} color="error" variant="contained" disabled={deleting} type="button">
+            {deleting ? 'Suppression...' : 'Supprimer'}
           </Button>
         </DialogActions>
       </Dialog>

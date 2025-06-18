@@ -228,7 +228,8 @@ export const deleteTicket = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
-    // Delete ticket
+    // Supprimer aussi l'historique lié au ticket lors de la suppression
+    await TicketHistory.destroy({ where: { ticketId: id } });
     await ticket.destroy();
     
     res.status(200).json({ message: 'Ticket deleted successfully' });
