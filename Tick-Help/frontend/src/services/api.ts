@@ -110,6 +110,11 @@ export const userService = {
     const response = await api.get('/auth/users');
     return response.data;
   },
+  // Supprimer le profil utilisateur connecté
+  deleteProfile: async () => {
+    const response = await api.delete('/user/profile');
+    return response.data;
+  },
 };
 
 export default api;

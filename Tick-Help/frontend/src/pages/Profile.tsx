@@ -6,11 +6,11 @@ import {
   Box,
   TextField,
   Button,
-  Grid,
   Divider,
   Avatar,
   Alert,
 } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/api';
 
@@ -102,6 +102,18 @@ const Profile: React.FC = () => {
       setTimeout(() => setSuccess(null), 3000);
     } catch (err: any) {
       setError(err.message || "Erreur lors de la mise à jour du mot de passe");
+    }
+  };
+
+  const handleDeleteProfile = async () => {
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) return;
+    setError(null);
+    setSuccess(null);
+    try {
+      await userService.deleteProfile();
+      logout();
+    } catch (err: any) {
+      setError(err.message || 'Erreur lors de la suppression du compte');
     }
   };
 
@@ -277,8 +289,16 @@ const Profile: React.FC = () => {
           variant="outlined" 
           color="error" 
           onClick={logout}
+          sx={{ mr: 2 }}
         >
           Se déconnecter
+        </Button>
+        <Button
+          variant="contained"
+          color="error"
+          onClick={handleDeleteProfile}
+        >
+          Supprimer le profil
         </Button>
       </Box>
     </Container>
