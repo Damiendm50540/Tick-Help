@@ -115,6 +115,11 @@ export const userService = {
     const response = await api.delete('/user/profile');
     return response.data;
   },
+  // Changer le mot de passe de l'utilisateur connecté
+  changePassword: async (currentPassword: string, newPassword: string) => {
+    const response = await api.put('/user/change-password', { currentPassword, newPassword });
+    return response.data;
+  }
 };
 
 export default api;

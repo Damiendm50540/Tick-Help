@@ -13,6 +13,7 @@ import {
 import Grid from '@mui/material/Grid';
 import { useAuth } from '../contexts/AuthContext';
 import { userService } from '../services/api';
+import ChangePassword from '../components/ChangePassword';
 
 /**
  * Page de profil utilisateur permettant de consulter et modifier 
@@ -24,13 +25,11 @@ const Profile: React.FC = () => {
     firstName: currentUser?.firstName || '',
     lastName: currentUser?.lastName || '',
     email: currentUser?.email || '',
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
   });
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
 
   if (!currentUser) {
     return (
@@ -70,39 +69,10 @@ const Profile: React.FC = () => {
     }
   };
 
-  const handlePasswordChange = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setSuccess(null);
-
-    if (formData.newPassword !== formData.confirmPassword) {
-      setError("Les mots de passe ne correspondent pas");
-      return;
-    }
-
-    if (formData.newPassword.length < 6) {
-      setError("Le mot de passe doit contenir au moins 6 caractères");
-      return;
-    }
-
-    try {
-      // Simulation - Dans une vraie application, appel à l'API
-      // await userService.updatePassword({
-      //   currentPassword: formData.currentPassword,
-      //   newPassword: formData.newPassword,
-      // });
-
-      setSuccess("Mot de passe mis à jour avec succès");
-      setFormData({
-        ...formData,
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '',
-      });
-      setTimeout(() => setSuccess(null), 3000);
-    } catch (err: any) {
-      setError(err.message || "Erreur lors de la mise à jour du mot de passe");
-    }
+  const handlePasswordSuccess = () => {
+    setSuccess("Mot de passe mis à jour avec succès");
+    setShowPasswordForm(false);
+    setTimeout(() => setSuccess(null), 3000);
   };
 
   const handleDeleteProfile = async () => {
@@ -232,55 +202,29 @@ const Profile: React.FC = () => {
         </Box>
 
         <Box>
-          <Typography variant="h6" sx={{ mb: 2 }}>Modifier le mot de passe</Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h6">Sécurité du compte</Typography>
+            <Button 
+              variant="outlined" 
+              onClick={() => setShowPasswordForm(!showPasswordForm)}
+            >
+              {showPasswordForm ? 'Annuler' : 'Changer le mot de passe'}
+            </Button>
+          </Box>
           <Divider sx={{ mb: 2 }} />
           
-          <form onSubmit={handlePasswordChange}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Mot de passe actuel"
-                  name="currentPassword"
-                  type="password"
-                  value={formData.currentPassword}
-                  onChange={handleChange}
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Nouveau mot de passe"
-                  name="newPassword"
-                  type="password"
-                  value={formData.newPassword}
-                  onChange={handleChange}
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Confirmer le nouveau mot de passe"
-                  name="confirmPassword"
-                  type="password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Button 
-                  type="submit" 
-                  variant="contained" 
-                  sx={{ mt: 1 }}
-                >
-                  Mettre à jour le mot de passe
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
+          {showPasswordForm ? (
+            <Box sx={{ mt: 2 }}>
+              <ChangePassword 
+                onSuccess={handlePasswordSuccess} 
+                onCancel={() => setShowPasswordForm(false)} 
+              />
+            </Box>
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              Pour des raisons de sécurité, utilisez un mot de passe fort et unique que vous n'utilisez pas ailleurs.
+            </Typography>
+          )}
         </Box>
       </Paper>
 
